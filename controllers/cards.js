@@ -30,7 +30,7 @@ const createCard = (req,res)=>{
 
 const deleteCard = (req,res)=>{
   if (ObjectId.isValid(req.params.cardId)) {
-    User.findByIdAndRemove(req.params.cardId)
+    Card.findByIdAndRemove(req.params.cardId)
     .then(card => res.send({ data: card }))
     .catch(err => {
       if(err.name === "CastError")
