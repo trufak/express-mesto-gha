@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const { constants } = require('http2');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 const getUsers = (req,res)=>{
   User.find({})
@@ -11,18 +12,24 @@ const getUsers = (req,res)=>{
 }
 
 const getUser = (req,res)=>{
-  User.findById(req.params.userId)
-  .then(user => res.send({ data: user }))
-  .catch(err => {
-    if(err.name === "CastError")
-      res.status(constants.HTTP_STATUS_NOT_FOUND)
-      .send({
-        message: "Запрашиваемый пользователь не найден"
+  if (ObjectId.isValid(req.params.userId)) {
+    User.findById(req.params.userId)
+    .then(user => res.send({ data: user }))
+    .catch(err => {
+     if(err.name === "CastError")
+        res.status(constants.HTTP_STATUS_NOT_FOUND)
+        .send({
+          message: "Запрашиваемый пользователь не найден"});
+      else
+        res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
+        .send({ message: err.message });
       });
-    else
-      res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-      .send({ message: err.message });
-  });
+  } else {
+    res.status(constants.HTTP_STATUS_BAD_REQUEST)
+    .send({
+      message: "Переданы некорректные данные о пользователе"});
+  }
+
 }
 
 const createUser = (req,res)=>{
