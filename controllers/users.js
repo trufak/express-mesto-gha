@@ -1,42 +1,31 @@
 const User = require('../models/user');
-const { constants } = require('http2');
+const {
+  responseBadRequest,
+  responseServerError,
+  responseNotFound
+} = require('../utils/responseErrors');
+const errorMessages = require('../utils/errorMessages');
 const ObjectId = require('mongoose').Types.ObjectId;
 
 const getUsers = (req,res)=>{
   User.find({})
   .then(users => res.send({ data: users }))
-  .catch(err =>
-    res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-    .send({ message: err.message })
-  );
+  .catch(err => responseServerError(res, err.message));
 }
 
 const getUser = (req,res)=>{
   if (ObjectId.isValid(req.params.userId)) {
     User.findById(req.params.userId)
     .then(user => {
-      if (user)
-        res.send({ data: user })
-      else
-        res.status(constants.HTTP_STATUS_NOT_FOUND)
-        .send({
-        message: "Запрашиваемый пользователь не найден"});
+      if (user) res.send({ data: user })
+      else responseNotFound(res, errorMessages.userNotFound);
     })
     .catch(err => {
-     if(err.name === "CastError")
-        res.status(constants.HTTP_STATUS_NOT_FOUND)
-        .send({
-          message: "Запрашиваемый пользователь не найден"});
-      else
-        res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-        .send({ message: err.message });
-      });
-  } else {
-    res.status(constants.HTTP_STATUS_BAD_REQUEST)
-    .send({
-      message: "Переданы некорректные данные о пользователе"});
-  }
-
+      if(err.name === "CastError")
+        responseNotFound(res, errorMessages.userNotFound);
+      else responseServerError(res, err.message);
+    });
+  } else responseBadRequest(res, errorMessages.userBadRequest);
 }
 
 const createUser = (req,res)=>{
@@ -45,13 +34,8 @@ const createUser = (req,res)=>{
   .then(user => res.send({ data: user }))
   .catch(err => {
     if(err.name === "ValidationError")
-      res.status(constants.HTTP_STATUS_BAD_REQUEST)
-      .send({
-        message: "Переданы некорректные данные о пользователе"
-      });
-    else
-      res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-      .send({ message: err.message });
+      responseBadRequest(res, errorMessages.userBadRequest);
+    else responseServerError(res, err.message);
   });
 }
 
@@ -67,18 +51,11 @@ const updateUser = (req,res) => {
   .then(user => res.send({ data: user }))
   .catch(err => {
     if(err.name === "CastError")
-      res.status(constants.HTTP_STATUS_NOT_FOUND)
-      .send({
-        message: "Запрашиваемый пользователь не найден"});
+      responseNotFound(res, errorMessages.userNotFound);
     else if(err.name === "ValidationError")
-      res.status(constants.HTTP_STATUS_BAD_REQUEST)
-      .send({
-        message: "Переданы некорректные данные о пользователе"
-      });
-    else
-      res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-      .send({ message: err.message });
-    });
+      responseBadRequest(res, errorMessages.userBadRequest);
+    else responseServerError(res, err.message);
+  });
 }
 
 const updateAvatar = (req,res)=>{
@@ -93,18 +70,11 @@ const updateAvatar = (req,res)=>{
   .then(user => res.send({ data: user }))
   .catch(err => {
     if(err.name === "CastError")
-      res.status(constants.HTTP_STATUS_NOT_FOUND)
-      .send({
-        message: "Запрашиваемый пользователь не найден"});
+      responseNotFound(res, errorMessages.userNotFound);
     else if(err.name === "ValidationError")
-      res.status(constants.HTTP_STATUS_BAD_REQUEST)
-      .send({
-        message: "Переданы некорректные данные о пользователе"
-      });
-    else
-      res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-      .send({ message: err.message });
-    });
+      responseBadRequest(res, errorMessages.userBadRequest);
+    else responseServerError(res, err.message);
+  });
 }
 
 

@@ -1,15 +1,18 @@
 const Card = require('../models/card');
 const { constants } = require('http2');
 const ObjectId = require('mongoose').Types.ObjectId;
+const {
+  responseBadRequest,
+  responseServerError,
+  responseNotFound
+} = require('../utils/responseErrors');
+const errorMessages = require('../utils/errorMessages');
 
 const getCards = (req,res)=>{
   Card.find({})
   .populate('owner')
   .then(cards => res.send({ data: cards }))
-  .catch(err =>
-    res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-    .send({ message: err.message })
-  );
+  .catch(err => responseServerError(res, err.message));
 }
 
 const createCard = (req,res)=>{
@@ -18,13 +21,8 @@ const createCard = (req,res)=>{
   .then(card => res.send({ data: card }))
   .catch(err => {
     if(err.name === "ValidationError")
-      res.status(constants.HTTP_STATUS_BAD_REQUEST)
-      .send({
-        message: "Переданы некорректные данные карточки"
-      });
-    else
-      res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-      .send({ message: err.message });
+      responseBadRequest(res, errorMessages.cardBadRequest);
+    else responseServerError(res, err.message);
   });
 }
 
@@ -34,29 +32,14 @@ const deleteCard = (req,res)=>{
     .then(card => {
       if (card)
         res.send({ data: card })
-      else
-        res.status(constants.HTTP_STATUS_NOT_FOUND)
-        .send({
-          message: "Запрашиваемая карточка не найдена"
-        });
+      else responseNotFound(res,errorMessages.cardNotFound);
     })
     .catch(err => {
       if(err.name === "CastError")
-        res.status(constants.HTTP_STATUS_NOT_FOUND)
-        .send({
-          message: "Запрашиваемая карточка не найдена"
-        });
-      else
-        res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-        .send({ message: err.message });
+        responseNotFound(res,errorMessages.cardNotFound);
+      else responseServerError(res, err.message);
     });
-  } else {
-    res.status(constants.HTTP_STATUS_BAD_REQUEST)
-    .send({
-      message: "Переданы некорректные данные карточки"
-    });
-  }
-
+  } else responseBadRequest(res, errorMessages.cardBadRequest);
 }
 
 const addlikeCard = (req,res)=>{
@@ -69,29 +52,14 @@ const addlikeCard = (req,res)=>{
     .then(card => {
       if (card)
         res.send({ data: card });
-      else
-        res.status(constants.HTTP_STATUS_NOT_FOUND)
-        .send({
-          message: "Запрашиваемая карточка не найдена"
-        });
+      else responseNotFound(res,errorMessages.cardNotFound);
     })
     .catch(err => {
       if(err.name === "CastError")
-        res.status(constants.HTTP_STATUS_NOT_FOUND)
-        .send({
-          message: "Запрашиваемая карточка не найдена"
-        });
-      else
-        res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-        .send({ message: err.message });
+        responseNotFound(res,errorMessages.cardNotFound);
+      else responseServerError(res, err.message);
     });
-  } else {
-    res.status(constants.HTTP_STATUS_BAD_REQUEST)
-    .send({
-      message: "Переданы некорректные данные карточки"
-    });
-  }
-
+  } else responseBadRequest(res, errorMessages.cardBadRequest);
 }
 
 const deletelikeCard = (req,res)=>{
@@ -105,29 +73,14 @@ const deletelikeCard = (req,res)=>{
     .then(card => {
       if (card)
         res.send({ data: card });
-      else
-        res.status(constants.HTTP_STATUS_NOT_FOUND)
-        .send({
-          message: "Запрашиваемая карточка не найдена"
-        });
+      else responseNotFound(res,errorMessages.cardNotFound);
     })
     .catch(err => {
       if(err.name === "CastError")
-        res.status(constants.HTTP_STATUS_NOT_FOUND)
-        .send({
-          message: "Запрашиваемая карточка не найдена"
-        });
-      else
-        res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-        .send({ message: err.message });
+        responseNotFound(res,errorMessages.cardNotFound);
+      else responseServerError(res, err.message);
     });
-  } else {
-    res.status(constants.HTTP_STATUS_BAD_REQUEST)
-    .send({
-      message: "Переданы некорректные данные карточки"
-    });
-  }
-
+  } else responseBadRequest(res, errorMessages.cardBadRequest);
 }
 
 module.exports = {
