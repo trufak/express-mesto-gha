@@ -14,7 +14,14 @@ const getUsers = (req,res)=>{
 const getUser = (req,res)=>{
   if (ObjectId.isValid(req.params.userId)) {
     User.findById(req.params.userId)
-    .then(user => res.send({ data: user }))
+    .then(user => {
+      if (user)
+        res.send({ data: user })
+      else
+        res.status(constants.HTTP_STATUS_NOT_FOUND)
+        .send({
+        message: "Запрашиваемый пользователь не найден"});
+    })
     .catch(err => {
      if(err.name === "CastError")
         res.status(constants.HTTP_STATUS_NOT_FOUND)
