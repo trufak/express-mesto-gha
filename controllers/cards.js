@@ -31,7 +31,15 @@ const createCard = (req,res)=>{
 const deleteCard = (req,res)=>{
   if (ObjectId.isValid(req.params.cardId)) {
     Card.findByIdAndRemove(req.params.cardId)
-    .then(card => res.send({ data: card }))
+    .then(card => {
+      if (card)
+        res.send({ data: card })
+      else
+        res.status(constants.HTTP_STATUS_NOT_FOUND)
+        .send({
+          message: "Запрашиваемая карточка не найдена"
+        });
+    })
     .catch(err => {
       if(err.name === "CastError")
         res.status(constants.HTTP_STATUS_NOT_FOUND)
