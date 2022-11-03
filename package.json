@@ -10,7 +10,7 @@
     "dev": "nodemon app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Sergey Trufakin",
   "license": "ISC",
   "devDependencies": {
     "eslint": "^8.26.0",

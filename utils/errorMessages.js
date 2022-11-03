@@ -3,5 +3,5 @@ module.exports = {
   userNotFound: "Запрашиваемый пользователь не найден",
   cardBadRequest: "Переданы некорректные данные карточки",
   cardNotFound: "Запрашиваемая карточка не найдена",
-  incorrectRoute: "Страница не найдена"
-}
+  incorrectRoute: "Страница не найдена",
+};
