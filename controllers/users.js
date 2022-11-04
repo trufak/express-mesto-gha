@@ -1,11 +1,10 @@
-const User = require("../models/user");
+const User = require('../models/user');
 const {
   responseBadRequest,
   responseServerError,
   responseNotFound,
-} = require("../utils/responseErrors");
-const errorMessages = require("../utils/errorMessages");
-const ObjectId = require("mongoose").Types.ObjectId;
+} = require('../utils/responseErrors');
+const errorMessages = require('../utils/errorMessages');
 
 const getUsers = (req, res) => {
   User.find({})
@@ -14,18 +13,16 @@ const getUsers = (req, res) => {
 };
 
 const getUser = (req, res) => {
-  if (ObjectId.isValid(req.params.userId)) {
-    User.findById(req.params.userId)
-      .then((user) => {
-        if (user) res.send({ data: user });
-        else responseNotFound(res, errorMessages.userNotFound);
-      })
-      .catch((err) => {
-        if (err.name === "CastError")
-          responseNotFound(res, errorMessages.userNotFound);
-        else responseServerError(res, err.message);
-      });
-  } else responseBadRequest(res, errorMessages.userBadRequest);
+  User.findById(req.params.userId)
+    .then((user) => {
+      if (user) res.send({ data: user });
+      else responseNotFound(res, errorMessages.userNotFound);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        responseNotFound(res, errorMessages.userNotFound);
+      } else responseServerError(res, err.message);
+    });
 };
 
 const createUser = (req, res) => {
@@ -33,9 +30,9 @@ const createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === "ValidationError")
+      if (err.name === 'ValidationError') {
         responseBadRequest(res, errorMessages.userBadRequest);
-      else responseServerError(res, err.message);
+      } else responseServerError(res, err.message);
     });
 };
 
@@ -47,15 +44,15 @@ const updateUser = (req, res) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === "CastError")
+      if (err.name === 'CastError') {
         responseNotFound(res, errorMessages.userNotFound);
-      else if (err.name === "ValidationError")
+      } else if (err.name === 'ValidationError') {
         responseBadRequest(res, errorMessages.userBadRequest);
-      else responseServerError(res, err.message);
+      } else responseServerError(res, err.message);
     });
 };
 
@@ -67,15 +64,15 @@ const updateAvatar = (req, res) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === "CastError")
+      if (err.name === 'CastError') {
         responseNotFound(res, errorMessages.userNotFound);
-      else if (err.name === "ValidationError")
+      } else if (err.name === 'ValidationError') {
         responseBadRequest(res, errorMessages.userBadRequest);
-      else responseServerError(res, err.message);
+      } else responseServerError(res, err.message);
     });
 };
 
