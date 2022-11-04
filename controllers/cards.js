@@ -44,7 +44,7 @@ const addlikeCard = (req, res) => {
   )
     .then((card) => {
       if (card) res.send({ data: card });
-      else responseNotFound(res, errorMessages.cardNotFound);
+      else responseBadRequest(res, errorMessages.cardBadRequest);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -61,7 +61,7 @@ const deletelikeCard = (req, res) => {
   )
     .then((card) => {
       if (card) res.send({ data: card });
-      else responseNotFound(res, errorMessages.cardNotFound);
+      else responseBadRequest(res, errorMessages.cardBadRequest);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
