@@ -16,11 +16,11 @@ const getUser = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (user) res.send({ data: user });
-      else responseBadRequest(res, errorMessages.userBadRequest);
+      else responseNotFound(res, errorMessages.userNotFound);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        responseNotFound(res, errorMessages.userNotFound);
+        responseBadRequest(res, errorMessages.userBadRequest);
       } else responseServerError(res, err.message);
     });
 };
@@ -48,9 +48,7 @@ const updateUser = (req, res) => {
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === 'CastError') {
-        responseNotFound(res, errorMessages.userNotFound);
-      } else if (err.name === 'ValidationError') {
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
         responseBadRequest(res, errorMessages.userBadRequest);
       } else responseServerError(res, err.message);
     });
@@ -68,9 +66,7 @@ const updateAvatar = (req, res) => {
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === 'CastError') {
-        responseNotFound(res, errorMessages.userNotFound);
-      } else if (err.name === 'ValidationError') {
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
         responseBadRequest(res, errorMessages.userBadRequest);
       } else responseServerError(res, err.message);
     });

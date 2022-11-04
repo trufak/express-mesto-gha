@@ -31,7 +31,7 @@ const deleteCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        responseNotFound(res, errorMessages.cardNotFound);
+        responseBadRequest(res, errorMessages.userBadRequest);
       } else responseServerError(res, err.message);
     });
 };
@@ -44,11 +44,11 @@ const addlikeCard = (req, res) => {
   )
     .then((card) => {
       if (card) res.send({ data: card });
-      else responseBadRequest(res, errorMessages.cardBadRequest);
+      else responseNotFound(res, errorMessages.cardNotFound);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        responseNotFound(res, errorMessages.cardNotFound);
+        responseBadRequest(res, errorMessages.userBadRequest);
       } else responseServerError(res, err.message);
     });
 };
@@ -61,11 +61,11 @@ const deletelikeCard = (req, res) => {
   )
     .then((card) => {
       if (card) res.send({ data: card });
-      else responseBadRequest(res, errorMessages.cardBadRequest);
+      else responseNotFound(res, errorMessages.cardNotFound);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        responseNotFound(res, errorMessages.cardNotFound);
+        responseBadRequest(res, errorMessages.userBadRequest);
       } else responseServerError(res, err.message);
     });
 };
