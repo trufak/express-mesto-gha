@@ -1,39 +1,43 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const User = require('../models/user');
+const BadRequestError = require('../errors/BadRequestError');
+const NotFoundError = require('../errors/NotFoundError');
+const ServerError = require('../errors/ServerError');
+const errorMessages = require('../utils/errorMessages');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-const User = require('../models/user');
-const {
-  responseBadRequest,
-  responseServerError,
-  responseNotFound,
-} = require('../utils/responseErrors');
-const errorMessages = require('../utils/errorMessages');
-
-const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.send({ data: users }))
-    .catch((err) => responseServerError(res, err.message));
-};
-
-const getUser = (req, res) => {
+const getUser = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (user) res.send({ data: user });
-      else responseNotFound(res, errorMessages.userNotFound);
+      else next(new NotFoundError(errorMessages.userNotFound));
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        responseBadRequest(res, errorMessages.userBadRequest);
-      } else responseServerError(res, err.message);
+        next(new BadRequestError(errorMessages.userBadRequest));
+      } else next(new ServerError(err.message));
     });
 };
 
-const login = (req, res) => {
+const getCurrentUser = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (user) res.send({ data: user });
+      else next(new NotFoundError(errorMessages.userNotFound));
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequestError(errorMessages.userBadRequest));
+      } else next(new ServerError(err.message));
+    });
+};
+
+const login = (req, res, next) => {
   const { email, password } = req.body;
 
-  return User.findUserByCredentials(email, password)
+  return User.findUserByCredentials(email, password, next)
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
@@ -46,10 +50,11 @@ const login = (req, res) => {
           maxAge: 3600 * 24 * 7,
           httpOnly: true,
         });
-    });
+    })
+    .catch((err) => next(new ServerError(err.message)));
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const {
     name,
     about,
@@ -68,12 +73,12 @@ const createUser = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        responseBadRequest(res, errorMessages.userBadRequest);
-      } else responseServerError(res, err.message);
+        next(new BadRequestError(errorMessages.userBadRequest));
+      } else next(new ServerError(err.message));
     });
 };
 
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -86,12 +91,12 @@ const updateUser = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
-        responseBadRequest(res, errorMessages.userBadRequest);
-      } else responseServerError(res, err.message);
+        next(new BadRequestError(errorMessages.userBadRequest));
+      } else next(new ServerError(err.message));
     });
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -104,16 +109,16 @@ const updateAvatar = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
-        responseBadRequest(res, errorMessages.userBadRequest);
-      } else responseServerError(res, err.message);
+        next(new BadRequestError(errorMessages.userBadRequest));
+      } else next(new ServerError(err.message));
     });
 };
 
 module.exports = {
-  getUsers,
   getUser,
   createUser,
   updateUser,
   updateAvatar,
-  login
+  login,
+  getCurrentUser,
 };
