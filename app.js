@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 
 const errorMessages = require('./utils/errorMessages');
 const { login, createUser } = require('./controllers/users');
@@ -40,6 +40,9 @@ app.use('/users', auth, require('./routes/users'));
 app.use('/cards', auth, require('./routes/cards'));
 
 app.use('*', (req, res) => new NotFoundError(errorMessages.incorrectRoute));
+
+/* обработка ошибок */
+app.use(errors());
 
 app.use((err, req, res, next) => {
   res

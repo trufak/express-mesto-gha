@@ -65,6 +65,7 @@ const login = (req, res, next) => {
 };
 
 const createUser = (req, res, next) => {
+  console.log('начало createUser');
   const {
     name,
     about,
