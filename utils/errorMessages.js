@@ -6,4 +6,5 @@ module.exports = {
   cardBadRequest: 'Переданы некорректные данные карточки',
   cardNotFound: 'Запрашиваемая карточка не найдена',
   incorrectRoute: 'Страница не найдена',
+  userConflict: 'пользователь с таким email уже существует',
 };

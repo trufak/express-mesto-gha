@@ -21,6 +21,12 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
       default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+      validate: {
+        validator(link) {
+          return /https?:\/\/(www.)?[\w-._~:/?#[]@!\$&'()\*\+,;=]+#?/.test(link);
+        },
+        message: (props) => `${props.value} - некорректный url!`,
+      },
     },
     email: {
       type: String,
@@ -46,12 +52,12 @@ userSchema.statics.findUserByCredentials = function (email, password, next) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        next(new UnauthorizedError(errorMessages.unauthorized));
+        throw new UnauthorizedError(errorMessages.unauthorized);
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            next(new UnauthorizedError(errorMessages.unauthorized));
+            throw new UnauthorizedError(errorMessages.unauthorized);
           }
 
           return user;

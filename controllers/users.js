@@ -4,6 +4,7 @@ const User = require('../models/user');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const ServerError = require('../errors/ServerError');
+const ConflictError = require('../errors/ConflictError');
 const errorMessages = require('../utils/errorMessages');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
@@ -51,7 +52,10 @@ const login = (req, res, next) => {
           httpOnly: true,
         });
     })
-    .catch((err) => next(new ServerError(err.message)));
+    .catch((err) => {
+      if (err.name === 'UnauthorizedError') next(err);
+      else next(new ServerError(err.message));
+    });
 };
 
 const createUser = (req, res, next) => {
@@ -74,6 +78,8 @@ const createUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError(errorMessages.userBadRequest));
+      } else if (err.code === 11000) {
+        next(new ConflictError(errorMessages.userConflict));
       } else next(new ServerError(err.message));
     });
 };

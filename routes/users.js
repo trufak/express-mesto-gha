@@ -1,4 +1,6 @@
 const router = require('express').Router();
+const { celebrate, Joi } = require('celebrate');
+
 const {
   getUser,
   updateUser,
@@ -6,12 +8,25 @@ const {
   getCurrentUser,
 } = require('../controllers/users');
 /* получение пользователя по id */
-router.get('/:userId', getUser);
+router.get('/:userId', celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string().alphanum().length(24),
+  }),
+}), getUser);
 /* получение данных текущего пользователя */
 router.get('/me', getCurrentUser);
 /* обновление данных пользователя */
-router.patch('/me', updateUser);
+router.patch('/me', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30),
+    about: Joi.string().required().min(2).max(30),
+  }),
+}), updateUser);
 /* обновление аватара пользователя */
-router.patch('/me/avatar', updateAvatar);
+router.patch('/me/avatar', celebrate({
+  body: Joi.object().keys({
+    avatar: Joi.string().required().uri(),
+  }),
+}), updateAvatar);
 
 module.exports = router;
