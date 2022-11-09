@@ -44,7 +44,7 @@ app.use('*', (req, res) => new NotFoundError(errorMessages.incorrectRoute));
 app.use((err, req, res, next) => {
   res
     .status(err.statusCode)
-    .send(err.message);
+    .send({ message: err.message });
 });
 
 app.listen(PORT, () => {
