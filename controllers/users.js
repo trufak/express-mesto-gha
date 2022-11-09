@@ -9,6 +9,12 @@ const errorMessages = require('../utils/errorMessages');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
+const getUsers = (req, res, next) => {
+  User.find({})
+    .then((users) => res.send({ data: users }))
+    .catch((err) => next(new ServerError(err.message)));
+};
+
 const getUser = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
@@ -121,6 +127,7 @@ const updateAvatar = (req, res, next) => {
 };
 
 module.exports = {
+  getUsers,
   getUser,
   createUser,
   updateUser,
