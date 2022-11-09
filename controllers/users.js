@@ -43,7 +43,6 @@ const getCurrentUser = (req, res, next) => {
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
-
   return User.findUserByCredentials(email, password, next)
     .then((user) => {
       const token = jwt.sign(
@@ -65,7 +64,6 @@ const login = (req, res, next) => {
 };
 
 const createUser = (req, res, next) => {
-  console.log('начало createUser');
   const {
     name,
     about,
