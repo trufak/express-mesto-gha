@@ -55,7 +55,7 @@ const login = (req, res, next) => {
           maxAge: 3600 * 24 * 7,
           httpOnly: true,
         })
-        .send(token);
+        .send({ token });
     })
     .catch((err) => {
       if (err.name === 'UnauthorizedError') next(err);
