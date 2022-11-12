@@ -3,7 +3,6 @@ const { celebrate, Joi } = require('celebrate');
 
 const {
   getUsers,
-  getUser,
   updateUser,
   updateAvatar,
   getCurrentUser,
@@ -24,12 +23,6 @@ router.patch('/me', celebrate({
     about: Joi.string().required().min(2).max(30),
   }),
 }), updateUser);
-/* получение пользователя по id */
-/* router.get('/:userId', celebrate({
-  params: Joi.object().keys({
-    userId: Joi.string().alphanum().length(24),
-  }),
-}), getUser); */
 /* получение всех пользователей */
 router.get('/', getUsers);
 
