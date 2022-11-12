@@ -3,6 +3,7 @@ const { celebrate, Joi } = require('celebrate');
 
 const {
   getUsers,
+  getUser,
   updateUser,
   updateAvatar,
   getCurrentUser,
@@ -14,6 +15,8 @@ router.patch('/me/avatar', celebrate({
     avatar: Joi.string().required().uri(),
   }),
 }), updateAvatar);
+/* получение данных пользователя */
+router.get('/:userID', getUser);
 /* получение данных текущего пользователя */
 router.get('/me', getCurrentUser);
 /* обновление данных пользователя */
