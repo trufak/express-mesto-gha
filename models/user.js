@@ -50,16 +50,18 @@ const userSchema = new mongoose.Schema(
 
 userSchema.statics.findUserByCredentials = function (email, password, next) {
   return this.findOne({ email }).select('+password')
-    .then((user) => {
-      if (!user) {
+    .then((document) => {
+      if (!document) {
         throw new UnauthorizedError(errorMessages.unauthorized);
       }
-      return bcrypt.compare(password, user.password)
+      return bcrypt.compare(password, document.password)
         .then((matched) => {
           if (!matched) {
             throw new UnauthorizedError(errorMessages.unauthorized);
           }
 
+          const user = document.toObject();
+          delete user.password;
           return user;
         });
     });
