@@ -15,8 +15,6 @@ router.patch('/me/avatar', celebrate({
     avatar: Joi.string().required().uri(),
   }),
 }), updateAvatar);
-/* получение данных пользователя */
-router.get('/:userID', getUser);
 /* получение данных текущего пользователя */
 router.get('/me', getCurrentUser);
 /* обновление данных пользователя */
@@ -26,6 +24,8 @@ router.patch('/me', celebrate({
     about: Joi.string().required().min(2).max(30),
   }),
 }), updateUser);
+/* получение данных пользователя */
+router.get('/:userID', getUser);
 /* получение всех пользователей */
 router.get('/', getUsers);
 
