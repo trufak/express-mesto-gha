@@ -8,14 +8,13 @@ const {
   updateAvatar,
   getCurrentUser,
 } = require('../controllers/users');
-/* получение всех пользователей */
-router.get('/', getUsers);
-/* получение пользователя по id */
-router.get('/:userId', celebrate({
-  params: Joi.object().keys({
-    userId: Joi.string().alphanum().length(24),
+
+/* обновление аватара пользователя */
+router.patch('/me/avatar', celebrate({
+  body: Joi.object().keys({
+    avatar: Joi.string().required().uri(),
   }),
-}), getUser);
+}), updateAvatar);
 /* получение данных текущего пользователя */
 router.get('/me', getCurrentUser);
 /* обновление данных пользователя */
@@ -25,11 +24,13 @@ router.patch('/me', celebrate({
     about: Joi.string().required().min(2).max(30),
   }),
 }), updateUser);
-/* обновление аватара пользователя */
-router.patch('/me/avatar', celebrate({
-  body: Joi.object().keys({
-    avatar: Joi.string().required().uri(),
+/* получение пользователя по id */
+/* router.get('/:userId', celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string().alphanum().length(24),
   }),
-}), updateAvatar);
+}), getUser); */
+/* получение всех пользователей */
+router.get('/', getUsers);
 
 module.exports = router;
