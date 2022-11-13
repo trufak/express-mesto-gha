@@ -5,6 +5,7 @@ module.exports = {
   needAuthorize: 'Необходима авторизация',
   cardBadRequest: 'Переданы некорректные данные карточки',
   cardNotFound: 'Запрашиваемая карточка не найдена',
+  cardDeleteNotOwner: 'Карточка может быть удалена только создателем',
   incorrectRoute: 'Страница не найдена',
   userConflict: 'пользователь с таким email уже существует',
 };

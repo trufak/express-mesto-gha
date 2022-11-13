@@ -25,9 +25,9 @@ const deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .then((card) => {
       if (card) {
-        if (card.owner === req.user._id) {
+        if (card.owner.toString() === req.user._id) {
           res.send({ data: card });
-        }
+        } else next(new BadRequestError(errorMessages.cardDeleteNotOwner));
       } else next(new NotFoundError(errorMessages.cardNotFound));
     })
     .catch((err) => {
