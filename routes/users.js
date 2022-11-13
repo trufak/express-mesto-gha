@@ -12,7 +12,7 @@ const {
 /* обновление аватара пользователя */
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().required().uri(),
+    avatar: Joi.string().uri({ scheme: ['http', 'https'] }),
   }),
 }), updateAvatar);
 /* получение данных текущего пользователя */
