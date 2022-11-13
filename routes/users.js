@@ -25,7 +25,7 @@ router.patch('/me', celebrate({
   }),
 }), updateUser);
 /* получение данных пользователя */
-router.get('/:userID', getUser);
+router.get('/:userId', getUser);
 /* получение всех пользователей */
 router.get('/', getUsers);
 
