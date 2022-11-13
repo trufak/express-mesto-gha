@@ -34,14 +34,14 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.use(auth);
-
 /* маршрутизация */
-app.use('/users', require('./routes/users'));
+app.use('/users', auth, require('./routes/users'));
 
-app.use('/cards', require('./routes/cards'));
+app.use('/cards', auth, require('./routes/cards'));
 
-app.use('*', (req, res) => new NotFoundError(errorMessages.incorrectRoute));
+app.use('*', (req, res, next) => {
+  next(new NotFoundError(errorMessages.incorrectRoute));
+});
 
 /* обработка ошибок */
 app.use(errors());

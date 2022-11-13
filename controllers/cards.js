@@ -2,6 +2,7 @@ const Card = require('../models/card');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const ServerError = require('../errors/ServerError');
+const ForbiddenError = require('../errors/ForbiddenError');
 const errorMessages = require('../utils/errorMessages');
 
 const getCards = (req, res, next) => {
@@ -27,7 +28,7 @@ const deleteCard = (req, res, next) => {
       if (card) {
         if (card.owner.toString() === req.user._id) {
           res.send({ data: card });
-        } else next(new BadRequestError(errorMessages.cardDeleteNotOwner));
+        } else next(new ForbiddenError(errorMessages.cardDeleteNotOwner));
       } else next(new NotFoundError(errorMessages.cardNotFound));
     })
     .catch((err) => {
