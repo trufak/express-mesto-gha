@@ -1,5 +1,7 @@
 const router = require('express').Router();
-const { celebrate, Joi } = require('celebrate');
+const userIdValidator = require('../utils/celebrateValidators/userIdValidator');
+const userDescriptValidator = require('../utils/celebrateValidators/userDescriptValidator');
+const userAvatarValidator = require('../utils/celebrateValidators/userAvatarValidator');
 
 const {
   getUsers,
@@ -10,26 +12,13 @@ const {
 } = require('../controllers/users');
 
 /* обновление аватара пользователя */
-router.patch('/me/avatar', celebrate({
-  body: Joi.object().keys({
-    avatar: Joi.string().uri({ scheme: ['http', 'https'] }),
-  }),
-}), updateAvatar);
+router.patch('/me/avatar', userAvatarValidator, updateAvatar);
 /* получение данных текущего пользователя */
 router.get('/me', getCurrentUser);
 /* обновление данных пользователя */
-router.patch('/me', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    about: Joi.string().required().min(2).max(30),
-  }),
-}), updateUser);
+router.patch('/me', userDescriptValidator, updateUser);
 /* получение данных пользователя */
-router.get('/:userId', celebrate({
-  params: Joi.object().keys({
-    userId: Joi.string().alphanum().length(24),
-  }),
-}), getUser);
+router.get('/:userId', userIdValidator, getUser);
 /* получение всех пользователей */
 router.get('/', getUsers);
 
