@@ -25,7 +25,11 @@ router.patch('/me', celebrate({
   }),
 }), updateUser);
 /* получение данных пользователя */
-router.get('/:userId', getUser);
+router.get('/:userId', celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string().alphanum().length(24),
+  }),
+}), getUser);
 /* получение всех пользователей */
 router.get('/', getUsers);
 
