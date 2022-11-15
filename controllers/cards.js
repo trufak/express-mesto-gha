@@ -23,10 +23,12 @@ const createCard = (req, res, next) => {
 };
 
 const deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.cardId)
-    .then((card) => {
-      if (card) {
+  Card.findById(req.params.cardId)
+    .then((document) => {
+      if (document) {
+        const card = document.toObject();
         if (card.owner.toString() === req.user._id) {
+          document.remove();
           res.send({ data: card });
         } else next(new ForbiddenError(errorMessages.cardDeleteNotOwner));
       } else next(new NotFoundError(errorMessages.cardNotFound));

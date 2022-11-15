@@ -1,6 +1,8 @@
 const router = require('express').Router();
-const cardIdValidator = require('../utils/celebrateValidators/cardIdValidator');
-const cardBodyValidator = require('../utils/celebrateValidators/cardBodyValidator');
+const {
+  cardIdValidator,
+  cardBodyValidator,
+} = require('../utils/celebrateValidators');
 const {
   getCards,
   createCard,

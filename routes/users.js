@@ -1,8 +1,9 @@
 const router = require('express').Router();
-const userIdValidator = require('../utils/celebrateValidators/userIdValidator');
-const userDescriptValidator = require('../utils/celebrateValidators/userDescriptValidator');
-const userAvatarValidator = require('../utils/celebrateValidators/userAvatarValidator');
-
+const {
+  userIdValidator,
+  userAvatarValidator,
+  userDescriptValidator,
+} = require('../utils/celebrateValidators');
 const {
   getUsers,
   getUser,

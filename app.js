@@ -3,8 +3,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
-const userBodyValidator = require('./utils/celebrateValidators/userBodyValidator');
-const userBodyLoginValidator = require('./utils/celebrateValidators/userBodyLoginValidator');
+const {
+  userBodyValidator,
+  userLoginValidator,
+} = require('./utils/celebrateValidators');
 const errorMessages = require('./utils/errorMessages');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
@@ -18,7 +20,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(bodyParser.json());
 /* авторизация */
-app.post('/signin', userBodyLoginValidator, login);
+app.post('/signin', userLoginValidator, login);
 /* регистрация */
 app.post('/signup', userBodyValidator, createUser);
 /* маршрутизация */
@@ -37,6 +39,7 @@ app.use((err, req, res, next) => {
   res
     .status(err.statusCode)
     .send({ message: err.message });
+  next();
 });
 /* включение API */
 app.listen(PORT, () => {
